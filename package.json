@@ -1,0 +1,22 @@
+{
+  "name": "user-profile-service",
+  "version": "1.0.0",
+  "description": "This service provides all the end points for user CRUD actions",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "development": "nodemon src/app.js"
+  },
+  "author": "Lithesh Pulikkool",
+  "license": "Unlicense",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongoose": "^7.4.1",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "swagger-ui-express": "^5.0.0"
+  }
+}

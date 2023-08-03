@@ -1,0 +1,121 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "User Login API",
+      "description": "API documentation for user login application",
+      "license": {
+        "name": "MIT"
+      }
+    },
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "auth",
+        "description": "Authentication API"
+      }
+    ],
+    "paths": {
+      "/login": {
+        "post": {
+          "tags": ["auth"],
+          "summary": "Authenticate user",
+          "description": "Authenticate a user by providing username and password",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "description": "User credentials",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful login",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Invalid credentials",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "error": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/dashboard": {
+        "get": {
+          "tags": ["auth"],
+          "summary": "Authenticate user",
+          "description": "Authenticate a user by providing username and password",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "description": "User credentials",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful login",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Invalid credentials",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "error": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
