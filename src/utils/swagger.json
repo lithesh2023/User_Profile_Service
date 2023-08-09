@@ -8,46 +8,59 @@
         "name": "MIT"
       }
     },
-    "basePath": "/",
+    "basePath": "/api/users",
     "tags": [
       {
-        "name": "auth",
+        "name": "Auth",
         "description": "Authentication API"
       }
     ],
     "paths": {
-      "/login": {
-        "post": {
-          "tags": ["auth"],
-          "summary": "Authenticate user",
-          "description": "Authenticate a user by providing username and password",
-          "parameters": [
-            {
-              "name": "user",
-              "in": "body",
-              "required": true,
-              "description": "User credentials",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "username": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          ],
+      "/oauth/facebook": {
+        "get": {
+          "tags": ["Facebook Auth"],
+          "summary": "Authenticate user using facebook",
+          "description": "Authenticate a user by facebook",
           "responses": {
             "200": {
               "description": "Successful login",
               "schema": {
                 "type": "object",
                 "properties": {
-                  "token": {
-                    "type": "string"
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "firstName": {
+                        "type": "string"
+                      },
+                      "lastName": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "username": {
+                        "type": "string"
+                      },
+                      "created": {
+                        "type": "string"
+                      },
+                      "provider": {
+                        "type": "string"
+                      },
+                      "__v": {
+                        "type": "integer"
+                      },
+                      "fullName": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
@@ -66,9 +79,90 @@
           }
         }
       },
-      "/dashboard": {
+      "/oauth/google": {
         "get": {
-          "tags": ["auth"],
+          "tags": ["Google Auth"],
+          "summary": "Authenticate user using Google",
+          "description": "Authenticate a user by Google",
+          "responses": {
+            "200": {
+              "description": "Successful login",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "firstName": {
+                        "type": "string"
+                      },
+                      "lastName": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "username": {
+                        "type": "string"
+                      },
+                      "created": {
+                        "type": "string"
+                      },
+                      "provider": {
+                        "type": "string"
+                      },
+                      "__v": {
+                        "type": "integer"
+                      },
+                      "fullName": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Invalid credentials",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "error": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/logout": {
+        "get": {
+          "tags": ["Auth"],
+          "summary": "Loggout user",
+          "description": "Logging out user",
+          "responses": {
+            "200": {
+              "description": "Successful logout",
+              "schema": {
+                "type": "string",
+                "properties": {
+                  "result" : "User successfully logged out"
+                }
+              }
+            }
+          }
+        }
+      },
+      "/login": {
+        "post": {
+          "tags": ["Auth"],
           "summary": "Authenticate user",
           "description": "Authenticate a user by providing username and password",
           "parameters": [
@@ -96,8 +190,131 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "token": {
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "firstName": {
+                        "type": "string"
+                      },
+                      "lastName": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "username": {
+                        "type": "string"
+                      },
+                      "created": {
+                        "type": "string"
+                      },
+                      "provider": {
+                        "type": "string"
+                      },
+                      "__v": {
+                        "type": "integer"
+                      },
+                      "fullName": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Invalid credentials",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "error": {
                     "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/signup": {
+        "post": {
+          "tags": ["Auth"],
+          "summary": "New user registration",
+          "description": "New user registration by providing user details",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "description": "User Details",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstname": {
+                    "type": "string"
+                  },
+                  "lastname": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful login",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "firstName": {
+                        "type": "string"
+                      },
+                      "lastName": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "username": {
+                        "type": "string"
+                      },
+                      "created": {
+                        "type": "string"
+                      },
+                      "provider": {
+                        "type": "string"
+                      },
+                      "__v": {
+                        "type": "integer"
+                      },
+                      "fullName": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
