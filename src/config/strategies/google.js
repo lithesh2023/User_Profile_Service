@@ -1,8 +1,8 @@
 const passport = require('passport'),
        url = require('url'),
        GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
-       config = require('../config'),
-       users = require('../../app/controllers/users.server.controller');
+       config = require('../../config'),
+       users = require('../../services/userServices');
    module.exports = function() {
      passport.use(new GoogleStrategy({
        clientID: config.google.clientID,

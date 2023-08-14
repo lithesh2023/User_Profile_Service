@@ -51,8 +51,16 @@ const saveOAuthUserProfile = function (req, profile, done) {
         }
     });
 };
+const getAllUsers = async () => {
+    const users = await (await User.find({}))
+    
+    const result = users.map((user) => {return{ "firstName": user.firstName, "lastName": user.lastName, "fullName": user.fullName, "email": user.email, "id": user.id }})
+    return result
+}
 module.exports = {
     createUser,
     getUser,
-    saveOAuthUserProfile
+    saveOAuthUserProfile,
+    getAllUsers
+
 }

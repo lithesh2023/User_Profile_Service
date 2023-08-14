@@ -2,19 +2,36 @@ const router = require("express").Router()
 const passport = require("passport")
 const userService = require("../services/userServices")
 
+
+
+router.get('/', async (req, res, next) => {
+    
+    res.status(201).send("I am here")
+})
+router.post('/', async (req, res, next) => {
+    const result = await userService.createUser(req.body)
+    res.status(201).send(result)
+})
 //Authenticate user
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/api/users/success',
-    failureRedirect: '/api/users/error',
+    successRedirect: '/api/user/success',
+    failureRedirect: '/api/user/error',
     failureFlash: true
 }));
+
+
 
 router.get('/error', function (req, res) {
     res.status(401).send({ error: req.flash('loginMessage') });
 });
 router.get('/success', function (req, res) {
-    res.send(200, { user: req.user });
+    res.status(200).send({ user: req.user });
 });
+
+router.get('/all',async(req,res)=>{
+    const result = await userService.getAllUsers()
+    res.status(200).send(result)
+})
 
 // Logout
 router.get('/logout', (req, res) => {
@@ -22,10 +39,7 @@ router.get('/logout', (req, res) => {
     res.redirect('/login');
 });
 
-router.post('/signup', async (req, res, next) => {
-    const result = await userService.createUser(req.body)
-    res.send(result)
-})
+
 router.get('/oauth/facebook', passport.authenticate('facebook', {
     failureRedirect: '/login'
 }));
