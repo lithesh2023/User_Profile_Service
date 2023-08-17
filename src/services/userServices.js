@@ -1,6 +1,5 @@
 var User = require('mongoose').model('User');
 const createUser = async (data) => {
-    console.log(` User data ${JSON.stringify(data)}`)
     if (data) {
         const user = new User(data);
         const message = null;
@@ -17,8 +16,8 @@ const createUser = async (data) => {
         return "Valid user details required"
     }
 };
-const getUser = async (id) => {
-    const user = await User.findById({ id })
+const getUser = async (username) => {
+    const user = await User.findOne({username})
     return user
 }
 
@@ -57,10 +56,24 @@ const getAllUsers = async () => {
     const result = users.map((user) => {return{ "firstName": user.firstName, "lastName": user.lastName, "fullName": user.fullName, "email": user.email, "id": user.id }})
     return result
 }
+const deleteUser = async (username)=>{
+    const user = await User.findOneAndDelete({username}).then(()=>{
+        return `Successfully Deleted the ${username}`
+    }).catch((err)=>{
+        return err
+    })
+   
+}
+
+const updateUser = async (username)=>{
+    const user = await User.findOneAndUpdate({username})
+    return user
+}
 module.exports = {
     createUser,
     getUser,
     saveOAuthUserProfile,
-    getAllUsers
-
+    getAllUsers,
+    deleteUser,
+    updateUser
 }

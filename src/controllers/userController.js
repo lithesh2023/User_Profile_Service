@@ -60,4 +60,22 @@ router.get('/oauth/google/callback', passport.authenticate('google', {
     failureRedirect: '/api/users/error'
 }));
 
+router.delete('/:uname',async(req,res) =>{
+    const id = req.params.uname
+    const result = await userService.deleteUser(id)
+    res.status(200).send(result)
+})
+
+router.put('/updateUser/:uname',async(req,res) =>{
+    const uname = req.params.uname
+    const result = await userService.deleteUser(uname)
+    res.status(200).send(result)
+})
+
+router.get('/:uname',async(req,res) =>{
+    const uname = req.params.uname
+    const result = await userService.getUser(uname)
+    res.status(200).send(result)
+})
+
 module.exports = router
