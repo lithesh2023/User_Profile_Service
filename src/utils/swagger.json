@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Swagger User Profile Servise - OpenAPI 3.0",
+    "title": "Swagger User Profile Service - OpenAPI 3.0",
     "description": "This is a  User Profile service Server based on the OpenAPI 3.0 specification.  ",
     "termsOfService": "http://swagger.io/terms/",
     "contact": {
