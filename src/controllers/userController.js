@@ -5,12 +5,22 @@ const userService = require("../services/userServices")
 
 
 router.get('/', async (req, res, next) => {
-    
+
     res.status(201).send("I am here")
 })
 router.post('/', async (req, res, next) => {
-    const result = await userService.createUser(req.body)
-    res.status(201).send(result)
+    try {
+        const {user,error} = await userService.createUser(req.body)
+        if(error){
+            res.status(500).send(error)
+        }else{
+            res.status(201).send(user)
+        }
+        
+    } catch (error) {
+        res.status(500).send(error)
+    }
+
 })
 //Authenticate user
 router.post('/login', passport.authenticate('local', {
@@ -28,7 +38,7 @@ router.get('/success', function (req, res) {
     res.status(200).send({ user: req.user });
 });
 
-router.get('/all',async(req,res)=>{
+router.get('/all', async (req, res) => {
     const result = await userService.getAllUsers()
     res.status(200).send(result)
 })
@@ -47,32 +57,32 @@ router.get('/oauth/facebook/callback', passport.authenticate('facebook',
     {
         successRedirect: '/api/users/success',
         failureRedirect: '/api/users/error',
-    })); 
-router.get('/oauth/google', passport.authenticate('google', {
-        failureRedirect: '/signin',
-        scope: [
-            'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/userinfo.email'
-        ],
     }));
+router.get('/oauth/google', passport.authenticate('google', {
+    failureRedirect: '/signin',
+    scope: [
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email'
+    ],
+}));
 router.get('/oauth/google/callback', passport.authenticate('google', {
     successRedirect: '/api/users/success',
     failureRedirect: '/api/users/error'
 }));
 
-router.delete('/:uname',async(req,res) =>{
+router.delete('/:uname', async (req, res) => {
     const id = req.params.uname
     const result = await userService.deleteUser(id)
     res.status(200).send(result)
 })
 
-router.put('/updateUser/:uname',async(req,res) =>{
+router.put('/:uname', async (req, res) => {
     const uname = req.params.uname
     const result = await userService.deleteUser(uname)
     res.status(200).send(result)
 })
 
-router.get('/:uname',async(req,res) =>{
+router.get('/:uname', async (req, res) => {
     const uname = req.params.uname
     const result = await userService.getUser(uname)
     res.status(200).send(result)

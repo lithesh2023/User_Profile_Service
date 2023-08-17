@@ -29,6 +29,10 @@ const UserSchema = new Schema({
     type: String,
     required: 'Provider is required'
   },
+  phone:{
+    type: Number,
+    required: 'Phone number is required'
+  },
   providerId: String,
   providerData: {},
   created: {

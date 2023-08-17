@@ -1,23 +1,25 @@
 var User = require('mongoose').model('User');
 const createUser = async (data) => {
+    let result=''
     if (data) {
         const user = new User(data);
         const message = null;
         user.provider = 'local';
-        await user.save().then((user) => {
-            console.log(`USer created : ${JSON.stringify(user)}`)
-            return user
+        result = await user.save().then((user) => {
+            return {user}
         }).catch((err) => {
             console.log(err)
-            return " Error " + err
+            return {error:err}
         })
     } else {
         console.log("User not created")
-        return "Valid user details required"
+        result = "Valid user details required"
     }
+
+    return result
 };
 const getUser = async (username) => {
-    const user = await User.findOne({username})
+    const user = await User.findOne({ username })
     return user
 }
 
@@ -52,21 +54,21 @@ const saveOAuthUserProfile = function (req, profile, done) {
 };
 const getAllUsers = async () => {
     const users = await (await User.find({}))
-    
-    const result = users.map((user) => {return{ "firstName": user.firstName, "lastName": user.lastName, "fullName": user.fullName, "email": user.email, "id": user.id }})
+
+    const result = users.map((user) => { return { "firstName": user.firstName, "lastName": user.lastName, "fullName": user.fullName, "email": user.email, "id": user.id } })
     return result
 }
-const deleteUser = async (username)=>{
-    const user = await User.findOneAndDelete({username}).then(()=>{
+const deleteUser = async (username) => {
+    const user = await User.findOneAndDelete({ username }).then(() => {
         return `Successfully Deleted the ${username}`
-    }).catch((err)=>{
+    }).catch((err) => {
         return err
     })
-   
+
 }
 
-const updateUser = async (username)=>{
-    const user = await User.findOneAndUpdate({username})
+const updateUser = async (username) => {
+    const user = await User.findOneAndUpdate({ username })
     return user
 }
 module.exports = {
