@@ -1,6 +1,7 @@
 const router = require("express").Router()
 const passport = require("passport")
 const userService = require("../services/userServices")
+const userPGService = require("../services/userServicesforPG")
 
 
 
@@ -10,7 +11,7 @@ router.get('/', async (req, res, next) => {
 })
 router.post('/', async (req, res, next) => {
     try {
-        const {user,error} = await userService.createUser(req.body)
+        const {user,error} = await userPGService.createUser(req.body)
         if(error){
             res.status(500).send(error)
         }else{
