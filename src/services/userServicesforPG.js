@@ -59,6 +59,10 @@ const authenticateUser = async ({ user_name, password }) => {
         email: user.get("email"),
       };
       const token = generateToken({ user_name, first_name, last_name });
+      await User.where({ user_name }).save(
+        { last_login_dt: new Date(), modified_dt: new Date() },
+        { method: "update" }
+      );
       return { user_name, first_name, last_name, email, token };
     }
   }
@@ -73,10 +77,10 @@ const getAllUsers = async () => {
     const result = await Promise.all(
       users.map((user) => {
         return {
-          first_name: user.get('first_name'),
-          last_name: user.get('last_name'),
-          email_id: user.get('email_id'),
-          user_id: user.get('user_id'),
+          first_name: user.get("first_name"),
+          last_name: user.get("last_name"),
+          email_id: user.get("email_id"),
+          user_id: user.get("user_id"),
         };
       })
     );
@@ -84,13 +88,20 @@ const getAllUsers = async () => {
   } else return "No Users found";
 };
 const deleteUser = async (user_name) => {
-  await User.where({ user_name })
+  const user = User.where({ user_name }).fetch()
+  if(user.length>0){
+    await User.where({ user_name })
     .destroy()
     .then()
     .catch((err) => {
       return err;
     });
   return `Successfully Deleted the ${user_name}`;
+  }
+  else{
+    return "No User found"
+  }
+  
 };
 
 const updateUser = async (user_name, data) => {
