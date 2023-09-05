@@ -1,5 +1,4 @@
 const Knex = require("knex")
-console.log("process.env.db_hostname",process.env.db_password)
 const knex = Knex({
     client: 'pg',
     connection: {

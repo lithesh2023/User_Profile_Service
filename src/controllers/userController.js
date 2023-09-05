@@ -1,92 +1,82 @@
-const router = require("express").Router()
-const passport = require("passport")
-const userService = require("../services/userServices")
-const userPGService = require("../services/userServicesforPG")
+const router = require("express").Router();
+const passport = require("passport");
+const userService = require("../services/userServices");
+const userPGService = require("../services/userServicesforPG");
+const { validateToken } = require("../utils/jwt");
 
-
-
-router.get('/', async (req, res, next) => {
-
-    res.status(201).send("I am here")
-})
-router.post('/', async (req, res, next) => {
-    try {
-        const {user,error} = await userPGService.createUser(req.body)
-        if(error){
-            res.status(500).send(error)
-        }else{
-            res.status(201).send(user)
-        }
-        
-    } catch (error) {
-        res.status(500).send(error)
+router.get("/", async (req, res, next) => {
+  res.status(201).send("I am here");
+});
+router.post("/", async (req, res, next) => {
+  try {
+    const { user, error } = await userPGService.createUser(req.body);
+    if (error) {
+      return res.status(500).send(error);
+    } else {
+      return res.status(201).send(user);
     }
-
-})
-//Authenticate user
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/api/user/success',
-    failureRedirect: '/api/user/error',
-    failureFlash: true
-}));
-
-
-
-router.get('/error', function (req, res) {
-    res.status(401).send({ error: req.flash('loginMessage') });
-});
-router.get('/success', function (req, res) {
-    res.status(200).send({ user: req.user });
+  } catch (error) {
+    return res.status(500).send(error);
+  }
 });
 
-router.get('/all', async (req, res) => {
-    const result = await userService.getAllUsers()
-    res.status(200).send(result)
-})
-
-// Logout
-router.get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/login');
+router.get("/all", validateToken, async (req, res) => {
+  try {
+    const result = await userPGService.getAllUsers();
+    return res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Error occured");
+  }
 });
 
+router.post("/login", async (req, res) => {
+  try {
+    const credentials = req.body;
+    const result = await userPGService.authenticateUser(credentials);
+    return res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Error occured");
+  }
+});
 
-router.get('/oauth/facebook', passport.authenticate('facebook', {
-    failureRedirect: '/login'
-}));
-router.get('/oauth/facebook/callback', passport.authenticate('facebook',
-    {
-        successRedirect: '/api/users/success',
-        failureRedirect: '/api/users/error',
-    }));
-router.get('/oauth/google', passport.authenticate('google', {
-    failureRedirect: '/signin',
-    scope: [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email'
-    ],
-}));
-router.get('/oauth/google/callback', passport.authenticate('google', {
-    successRedirect: '/api/users/success',
-    failureRedirect: '/api/users/error'
-}));
+router.delete("/:uname", validateToken, async (req, res) => {
+  try {
+    const uname = req.params.uname;
+    const result = await userPGService.deleteUser(uname);
+    console.log(`result is ${result}`);
+    return res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Error occured");
+  }
+});
 
-router.delete('/:uname', async (req, res) => {
-    const id = req.params.uname
-    const result = await userService.deleteUser(id)
-    res.status(200).send(result)
-})
+router.put("/:uname", validateToken, async (req, res) => {
+  try {
+    const uname = req.params.uname;
+    const data = req.body;
+    const result = await userPGService.updateUser(uname, data);
+    return res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Error occured");
+  }
+});
 
-router.put('/:uname', async (req, res) => {
-    const uname = req.params.uname
-    const result = await userService.deleteUser(uname)
-    res.status(200).send(result)
-})
+router.get("/:uname", validateToken, async (req, res) => {
+  try {
+    const uname = req.params.uname;
+    const result = await userPGService.getUser(uname);
+    if (result.error) {
+      return res.status(500).send(result);
+    }
+    return res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Error occured");
+  }
+});
 
-router.get('/:uname', async (req, res) => {
-    const uname = req.params.uname
-    const result = await userService.getUser(uname)
-    res.status(200).send(result)
-})
-
-module.exports = router
+module.exports = router;
