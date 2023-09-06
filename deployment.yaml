@@ -22,4 +22,4 @@ spec:
     nodePort: 30008
   selector: 
     name: msone
-    app: microservice-one
+    app: user-profile-service

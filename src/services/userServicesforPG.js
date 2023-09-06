@@ -23,7 +23,7 @@ const createUser = async (data) => {
         console.log(error);
         return { error };
       });
-
+    
     return user;
   } catch (error) {
     console.log(error);
@@ -91,17 +91,17 @@ const deleteUser = async (user_name) => {
   const user = User.where({ user_name }).fetch()
   if(user.length>0){
     await User.where({ user_name })
-    .destroy()
-    .then()
-    .catch((err) => {
-      return err;
-    });
-  return `Successfully Deleted the ${user_name}`;
+      .destroy()
+      .then()
+      .catch((err) => {
+        return err;
+      });
+    return `Successfully Deleted the ${user_name}`;
   }
   else{
     return "No User found"
   }
-  
+
 };
 
 const updateUser = async (user_name, data) => {

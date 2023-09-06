@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-parking-user-profile
+  labels:
+    app: car-parking-user-profile
+spec:
+  selector:
+    matchLabels:
+      name: car-parking-user-profile
+  replicas: 1
+  template:
+    metadata:
+      name: car-parking-user-profile
+      labels:
+        name: car-parking-user-profile
+        app: car-parking-user-profile
+    spec:
+      containers:
+        - name: user-profile-service
+          image: litheshp/user-profile-service
+          ports:
+            - containerPort: 3000
