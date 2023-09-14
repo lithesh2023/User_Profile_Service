@@ -9,11 +9,11 @@ router.get("/", async (req, res, next) => {
 });
 router.post("/", async (req, res, next) => {
   try {
-    const { user, error } = await userPGService.createUser(req.body);
-    if (error) {
-      return res.status(500).send(error);
+    const result = await userPGService.createUser(req.body);
+    if (result.error) {
+      return res.status(400).send(result);
     } else {
-      return res.status(201).send(user);
+      return res.status(201).send(result);
     }
   } catch (error) {
     return res.status(500).send(error);
@@ -33,6 +33,7 @@ router.get("/all", validateToken, async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const credentials = req.body;
+    console.log("credentials ", credentials);
     const result = await userPGService.authenticateUser(credentials);
     return res.status(200).send(result);
   } catch (error) {
@@ -45,7 +46,6 @@ router.delete("/:uname", validateToken, async (req, res) => {
   try {
     const uname = req.params.uname;
     const result = await userPGService.deleteUser(uname);
-    console.log(`result is ${result}`);
     return res.status(200).send(result);
   } catch (error) {
     console.log(error);

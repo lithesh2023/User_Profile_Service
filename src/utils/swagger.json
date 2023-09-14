@@ -123,38 +123,6 @@
         }
       }
     },
-    "/user/oauth/facebook": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Signup with Facebook",
-        "description": "",
-        "operationId": "",
-        "parameters": [],
-        "responses": {
-          "default": {
-            "description": "successful operation"
-          }
-        }
-      }
-    },
-    "/user/oauth/google": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Signup with Google",
-        "description": "",
-        "operationId": "",
-        "parameters": [],
-        "responses": {
-          "default": {
-            "description": "successful operation"
-          }
-        }
-      }
-    },
     "/user/logout": {
       "get": {
         "tags": [

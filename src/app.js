@@ -10,6 +10,8 @@ const passportLocalStrategy = require("./config/strategies/local");
 const passportFacebookStrategy = require("./config/strategies/facebook");
 (flash = require("connect-flash")), require("dotenv").config();
 
+const cors = require('cors')
+
 // Passport local strategy
 //need to modify this
 passportLocalStrategy();
@@ -18,6 +20,7 @@ passportConfig();
 //connecting database
 //mongoose.connectDb() // Not using Mongdb , using Postgres instead
 const app = express();
+app.use(cors())
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
