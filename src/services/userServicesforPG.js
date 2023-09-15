@@ -4,34 +4,37 @@ const bcrypt = require("bcrypt");
 
 const createUser = async (data) => {
   try {
-    console.log(data)
-    let result
+    console.log(data);
+    let result;
     const existingMail = await User.where({
       email_id: data.email_id,
-    }).fetch()
-    .catch(err=>console.log(err))
+    })
+      .fetch()
+      .catch((err) => console.log(err));
     if (existingMail) {
-      console.log("I am here")
-       result =  {
+      console.log("I am here");
+      result = {
         data: null,
         error: {
           message: "Email Id already Existing.Please use different email id",
         },
       };
-      return result
+      return result;
     }
-    console.log("username",data.user_name)
+    console.log("username", data.user_name);
     const existingUser = await User.where({
       user_name: data.user_name,
-    }).fetch().catch(err=>console.log(err))
+    })
+      .fetch()
+      .catch((err) => console.log(err));
     if (existingUser) {
-      result =  {
+      result = {
         data: null,
         error: {
           message: "Username already Existing.Please use different user name",
         },
       };
-      return result
+      return result;
     }
     data.active_status = true;
     data.last_login_dt = new Date();
@@ -43,7 +46,7 @@ const createUser = async (data) => {
     const hash = await hashPassword(data.password);
     data.password = hash;
 
-   result = await User.forge(data)
+    result = await User.forge(data)
       .save()
       .then(function (user) {
         const userName = `${user.get("first_name")} ${user.get("last_name")}`;
@@ -81,13 +84,19 @@ const authenticateUser = async (credentials) => {
     const hash = await hashPassword(credentials.password);
     const valid = bcrypt.compare(credentials.password, hash);
     if (valid) {
-      const { user_name, first_name, last_name, email } = {
+      const { user_name, first_name, last_name, email, user_id } = {
         user_name: user.get("user_name"),
         first_name: user.get("first_name"),
         last_name: user.get("last_name"),
         email: user.get("email_id"),
+        user_id: user.get("user_id"),
       };
-      const token = generateToken({ user_name, first_name, last_name });
+      const token = generateToken({
+        user_name,
+        first_name,
+        last_name,
+        user_id,
+      });
       await User.where({ user_name }).save(
         { last_login_dt: new Date(), modified_dt: new Date() },
         { method: "update" }
