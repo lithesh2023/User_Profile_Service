@@ -36,9 +36,8 @@ jobs:
         run: |
           npm install
       # build and test the apps
-      - name: build
+      - name: test
         run: |
-          npm run build
           npm test
   push_to_Docker_Hub:
     # The type of runner that the job will run on
@@ -63,7 +62,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: push
         uses: docker/build-push-action@v2
         with:
           context: ./
