@@ -13,8 +13,8 @@ ENV db_username=postgres
 ENV db_password=postgres
 ENV database_port=5432
 ENV servicename=postgres
-ENV JWT_SECRET_KEY = car_parking_booking_secret
-ENV TOKEN_HEADER_KEY = gfg_token_header_key
+ENV JWT_SECRET_KEY=car_parking_booking_secret
+ENV TOKEN_HEADER_KEY=gfg_token_header_key
 # Install app dependencies
 # where available (npm@5+)
 COPY package*.json ./
