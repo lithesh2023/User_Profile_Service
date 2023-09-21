@@ -76,14 +76,28 @@ const getUser = async (user_name) => {
 };
 
 const authenticateUser = async (credentials) => {
-  const user = await User.where({ email_id: credentials.email }).fetch();
+  const user = await User.where({ email_id: credentials.email }).fetch({
+    withRelated: ["roles", "vehicles"],
+  });
   if (!user) {
     return { message: "Invalid User Details" };
   }
   if (user) {
     const hash = await hashPassword(credentials.password);
     const valid = bcrypt.compare(credentials.password, hash);
+
     if (valid) {
+      const role = await user.related("roles").map((role) => {
+        return role.get("role_id");
+      });
+      const vehicles = await user.related("vehicles").map((vehicle) => {
+        return {
+          reg_num: vehicle.get("reg_num"),
+          make: vehicle.get("make"),
+          model: vehicle.get("model"),
+          booking_id: vehicle.get("booking_id"),
+        };
+      });
       const { user_name, first_name, last_name, email, user_id } = {
         user_name: user.get("user_name"),
         first_name: user.get("first_name"),
@@ -101,7 +115,16 @@ const authenticateUser = async (credentials) => {
         { last_login_dt: new Date(), modified_dt: new Date() },
         { method: "update" }
       );
-      return { user_name, first_name, last_name, email, token };
+      return {
+        user_name,
+        first_name,
+        last_name,
+        email,
+        token,
+        user_id,
+        role,
+        vehicles,
+      };
     }
   }
   return { error: "un-authorized", message: "Invalid User Details" };
