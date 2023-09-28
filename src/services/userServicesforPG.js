@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 
 const createUser = async (data) => {
   try {
-    console.log(data);
     let result;
     const existingMail = await User.where({
       email_id: data.email_id,
@@ -12,7 +11,6 @@ const createUser = async (data) => {
       .fetch()
       .catch((err) => console.log(err));
     if (existingMail) {
-      console.log("I am here");
       result = {
         data: null,
         error: {
@@ -21,7 +19,6 @@ const createUser = async (data) => {
       };
       return result;
     }
-    console.log("username", data.user_name);
     const existingUser = await User.where({
       user_name: data.user_name,
     })
@@ -64,70 +61,86 @@ const createUser = async (data) => {
 };
 
 const getUser = async (user_name) => {
-  const user = await User.where({ user_name }).fetch();
-  console.log(user);
-  if (user) {
-    return user;
-  } else {
+  try {
+    const user = await User.where({ user_name }).fetch();
+
+    if (user) {
+      return user;
+    } else {
+      return {
+        data: null,
+        error: {
+          message: "No User found",
+        },
+      };
+    }
+  } catch (error) {
     return {
-      error: "No User found",
+      data: null,
+      error: {
+        message: "No User found",
+      },
     };
   }
 };
 
 const authenticateUser = async (credentials) => {
-  const user = await User.where({ email_id: credentials.email }).fetch({
-    withRelated: ["roles", "vehicles"],
-  });
-  if (!user) {
-    return { message: "Invalid User Details" };
-  }
-  if (user) {
-    const hash = await hashPassword(credentials.password);
-    const valid = bcrypt.compare(credentials.password, hash);
-
-    if (valid) {
-      const role = await user.related("roles").map((role) => {
-        return role.get("role_id");
-      });
-      const vehicles = await user.related("vehicles").map((vehicle) => {
-        return {
-          reg_num: vehicle.get("reg_num"),
-          make: vehicle.get("make"),
-          model: vehicle.get("model"),
-          booking_id: vehicle.get("booking_id"),
-        };
-      });
-      const { user_name, first_name, last_name, email, user_id } = {
-        user_name: user.get("user_name"),
-        first_name: user.get("first_name"),
-        last_name: user.get("last_name"),
-        email: user.get("email_id"),
-        user_id: user.get("user_id"),
-      };
-      const token = generateToken({
-        user_name,
-        first_name,
-        last_name,
-        user_id,
-      });
-      await User.where({ user_name }).save(
-        { last_login_dt: new Date(), modified_dt: new Date() },
-        { method: "update" }
-      );
-      return {
-        user_name,
-        first_name,
-        last_name,
-        email,
-        token,
-        user_id,
-        role,
-        vehicles,
-      };
+  try {
+    const user = await User.where({ email_id: credentials.email }).fetch({
+      withRelated: ["roles", "vehicles"],
+    });
+    if (!user) {
+      return { message: "Invalid User Details" };
     }
+    if (user) {
+      const hash = await hashPassword(credentials.password);
+      const valid = bcrypt.compare(credentials.password, hash);
+
+      if (valid) {
+        const role = await user.related("roles").map((role) => {
+          return role.get("role_id");
+        });
+        const vehicles = await user.related("vehicles").map((vehicle) => {
+          return {
+            reg_num: vehicle.get("reg_num"),
+            make: vehicle.get("make"),
+            model: vehicle.get("model"),
+            booking_id: vehicle.get("booking_id"),
+          };
+        });
+        const { user_name, first_name, last_name, email, user_id } = {
+          user_name: user.get("user_name"),
+          first_name: user.get("first_name"),
+          last_name: user.get("last_name"),
+          email: user.get("email_id"),
+          user_id: user.get("user_id"),
+        };
+        const token = generateToken({
+          user_name,
+          first_name,
+          last_name,
+          user_id,
+        });
+        await User.where({ user_name }).save(
+          { last_login_dt: new Date(), modified_dt: new Date() },
+          { method: "update" }
+        );
+        return {
+          user_name,
+          first_name,
+          last_name,
+          email,
+          token,
+          user_id,
+          role,
+          vehicles,
+        };
+      }
+    }
+    return { error: "un-authorized", message: "Invalid User Details" };
+  } catch (error) {
+    return { error: "un-authorized", message: "Invalid User Details" };
   }
-  return { error: "un-authorized", message: "Invalid User Details" };
 };
 
 const getAllUsers = async () => {

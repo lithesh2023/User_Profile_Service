@@ -33,9 +33,12 @@ router.get("/all", validateToken, async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const credentials = req.body;
-    console.log("credentials ", credentials);
     const result = await userPGService.authenticateUser(credentials);
-    return res.status(200).send(result);
+    if (result.error) {
+      return res.status(400).send(result);
+    } else {
+      return res.status(201).send(result);
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).send("Error occured");
