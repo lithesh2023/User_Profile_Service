@@ -93,10 +93,12 @@ const authenticateUser = async (credentials) => {
       return { message: "Invalid User Details" };
     }
     if (user) {
-      const valid = await bcrypt.compare(
-        credentials.password,
-        user.get("password")
-      );
+      // const valid = await bcrypt.compare(
+      //   credentials.password,
+      //   user.get("password")
+      // );
+      const hash = await hashPassword(credentials.password);
+      const valid = bcrypt.compare(credentials.password, hash);
       if (valid) {
         const role = await user.related("roles").map((role) => {
           return role.get("role_id");
